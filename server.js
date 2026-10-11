@@ -17,6 +17,7 @@ app.use('/api', trafficRoutes);
 initializeDatabase()
     .then(() => app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)))
     .catch((error) => {
-        console.error('Database setup failed:', error);
-        process.exit(1);
-    });
+    console.error('Database setup failed:', error.message);
+    console.error('Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+    process.exit(1);
+});
