@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const { initializeDatabase } = require('./lib/database-init');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -12,6 +14,9 @@ app.use(express.static('public'));
 const trafficRoutes = require('./routes/trafficroutes');
 app.use('/api', trafficRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+initializeDatabase()
+    .then(() => app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)))
+    .catch((error) => {
+        console.error('Database setup failed:', error.message);
+        process.exit(1);
+    });
